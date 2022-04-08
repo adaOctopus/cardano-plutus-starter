@@ -11,6 +11,8 @@ in
     nativeBuildInputs = with plutus-starter; [
       hlint
       cabal-install
+      cardano-node.cardano-cli
+      cardano-node.cardano-node
       haskell-language-server
       stylish-haskell
       pkgs.niv
