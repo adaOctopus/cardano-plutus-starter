@@ -1,0 +1,2 @@
+Just started this repository as a starter kit
+To help us develop faster on CArdano
