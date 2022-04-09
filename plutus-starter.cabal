@@ -44,6 +44,11 @@ library
       MyModule
       Locker
       Plutus.Contracts.Game
+      Token.OffChain
+      Token.OnChain
+      Trace
+      Utils
+
     build-depends:
       base >= 4.9 && < 5,
       aeson,
@@ -100,5 +105,19 @@ executable locker
   hs-source-dirs:      src
   ghc-options:         -Wall
   build-depends:       base >=4.9 && <5
+                     , plutus-starter
+
+executable token-policy
+  main-is: token-policy.hs
+  hs-source-dirs:      app
+  ghc-options:         -Wall
+  build-depends:       base ^>= 4.14.1.0
+                     , plutus-starter
+
+executable token-name
+  main-is: token-name.hs
+  hs-source-dirs:      app
+  ghc-options:         -Wall
+  build-depends:       base ^>= 4.14.1.0
                      , plutus-starter
 

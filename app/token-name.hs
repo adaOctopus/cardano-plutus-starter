@@ -4,7 +4,7 @@ module Main
 
 import Data.String        (IsString (..))
 import System.Environment (getArgs)
-import Week06.Utils       (unsafeTokenNameToHex)
+import Utils       (unsafeTokenNameToHex)
 
 main :: IO ()
 main = do

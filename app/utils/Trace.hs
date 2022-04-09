@@ -8,7 +8,7 @@
 {-# LANGUAGE TypeApplications      #-}
 {-# LANGUAGE TypeFamilies          #-}
 
-module Week06.Trace
+module Trace
     ( testToken
     ) where
 
@@ -19,7 +19,7 @@ import           PlutusTx.Prelude           hiding (Semigroup(..), unless)
 import           Prelude                    (IO)
 import           Wallet.Emulator.Wallet
 
-import           Week06.Token.OffChain
+import           Token.OffChain
 
 testToken :: IO ()
 testToken = runEmulatorTraceIO tokenTrace

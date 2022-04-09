@@ -8,7 +8,7 @@
 {-# LANGUAGE TypeApplications    #-}
 {-# LANGUAGE TypeFamilies        #-}
 
-module Week06.Token.OffChain
+module Token.OffChain
     ( TokenParams (..)
     , adjustAndSubmit, adjustAndSubmitWith
     , mintToken
@@ -34,8 +34,8 @@ import           Prelude                     (Semigroup (..), Show (..), String)
 import qualified Prelude
 import           Text.Printf                 (printf)
 
-import           Week06.Token.OnChain
-import           Week06.Utils                (getCredentials)
+import           Token.OnChain
+import           Utils                (getCredentials)
 
 data TokenParams = TokenParams
     { tpToken   :: !TokenName
