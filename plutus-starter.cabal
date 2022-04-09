@@ -47,14 +47,28 @@ library
     build-depends:
       base >= 4.9 && < 5,
       aeson,
-      bytestring,
-      containers,
-      freer-extras,
-      playground-common,
-      plutus-contract,
-      plutus-tx-plugin,
-      plutus-tx,
-      plutus-ledger,
+      , bytestring
+      , cardano-api
+      , cardano-crypto-class
+      , cardano-ledger-core
+      , cardano-ledger-shelley
+      , cardano-wallet-core
+      , containers
+      , data-default
+      , freer-extras
+      , openapi3
+      , playground-common
+      , plutus-contract
+      , plutus-ledger
+      , plutus-ledger-api
+      , plutus-ledger-constraints
+      , plutus-pab
+      , plutus-tx-plugin
+      , plutus-tx
+      , plutus-use-cases
+      , prettyprinter
+      , serialise
+      , text
     hs-source-dirs: src examples/src
 
 test-suite plutus-example-projects-test
