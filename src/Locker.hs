@@ -11,7 +11,7 @@
 {-# LANGUAGE TypeOperators       #-}
 
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
-module Week06.Locker where
+module Locker where
 
 
 import           Control.Monad        hiding (fmap)

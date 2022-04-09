@@ -13,8 +13,8 @@ version:            0.1.0.0
 
 license: Apache-2.0
 license-files: LICENSE
-author:             Your name
-maintainer:         Your email
+author:             Tasos V Gandalf
+maintainer:         tasos.valtinos@gmail.com
 
 -- A copyright notice.
 -- copyright:
@@ -42,6 +42,7 @@ library
     import: lang
     exposed-modules:
       MyModule
+      Locker
       Plutus.Contracts.Game
     build-depends:
       base >= 4.9 && < 5,
