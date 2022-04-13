@@ -15,7 +15,11 @@
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE TypeOperators              #-}
 
-module Week01.EnglishAuction
+
+-- This module definition needs to be removed
+-- When running the code on the Pllayground
+-- Otherwise you will get a compile error
+module SurehiveAuction
     ( Auction (..)
     , StartParams (..), BidParams (..), CloseParams (..)
     , AuctionSchema
@@ -54,7 +58,7 @@ minLovelace :: Integer
 minLovelace = 2000000
 
 data Auction = Auction
-    { aSeller   :: !PaymentPubKeyHash
+    { aNFTowner   :: !PaymentPubKeyHash
     , aDeadline :: !POSIXTime
     , aMinBid   :: !Integer
     , aCurrency :: !CurrencySymbol
@@ -63,7 +67,7 @@ data Auction = Auction
 
 instance Eq Auction where
     {-# INLINABLE (==) #-}
-    a == b = (aSeller   a == aSeller   b) &&
+    a == b = (aNFTowner   a == aNFTowner   b) &&
              (aDeadline a == aDeadline b) &&
              (aMinBid   a == aMinBid   b) &&
              (aCurrency a == aCurrency b) &&
@@ -125,10 +129,10 @@ mkAuctionValidator ad redeemer ctx =
             traceIfFalse "too early" correctCloseSlotRange &&
             case adHighestBid ad of
                 Nothing      ->
-                    traceIfFalse "expected seller to get token" (getsValue (aSeller auction) $ tokenValue <> Ada.lovelaceValueOf minLovelace)
+                    traceIfFalse "expected seller to get token" (getsValue (aNFTowner auction) $ tokenValue <> Ada.lovelaceValueOf minLovelace)
                 Just Bid{..} ->
                     traceIfFalse "expected highest bidder to get token" (getsValue bBidder $ tokenValue <> Ada.lovelaceValueOf minLovelace) &&
-                    traceIfFalse "expected seller to get highest bid" (getsValue (aSeller auction) $ Ada.lovelaceValueOf bBid)
+                    traceIfFalse "expected seller to get highest bid" (getsValue (aNFTowner auction) $ Ada.lovelaceValueOf bBid)
 
   where
     info :: TxInfo
@@ -256,7 +260,7 @@ start :: AsContractError e => StartParams -> Contract w s e ()
 start StartParams{..} = do
     pkh <- ownPaymentPubKeyHash
     let a = Auction
-                { aSeller   = pkh
+                { aNFTowner   = pkh
                 , aDeadline = spDeadline
                 , aMinBid   = spMinBid
                 , aCurrency = spCurrency
@@ -311,7 +315,7 @@ close CloseParams{..} = do
 
     let t      = Value.singleton cpCurrency cpToken 1
         r      = Redeemer $ PlutusTx.toBuiltinData Close
-        seller = aSeller adAuction
+        seller = aNFTowner adAuction
 
         lookups = Constraints.typedValidatorLookups typedAuctionValidator P.<>
                   Constraints.otherScript auctionValidator                P.<>

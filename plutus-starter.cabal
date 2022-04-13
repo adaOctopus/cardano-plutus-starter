@@ -43,6 +43,7 @@ library
     exposed-modules:
       MyModule
       Locker
+      SurehiveAuction
       Plutus.Contracts.Game
       Token.OffChain
       Token.OnChain
@@ -121,3 +122,9 @@ executable token-name
   build-depends:       base ^>= 4.14.1.0
                      , plutus-starter
 
+executable surehive-auction
+  main-is: SurehiveAuction.hs
+  hs-source-dirs:      src/surehive-task
+  ghc-options:         -Wall
+  build-depends:       base >=4.9 && <5
+                     , plutus-starter
