@@ -31,9 +31,19 @@ module SurehiveAuction
     , printSchemas
     , registeredKnownCurrencies
     , stage
+    , auctionScriptShortBs
+    , auctionScript
     ) where
 
 import           Control.Monad        hiding (fmap)
+
+import           Prelude hiding (($))
+
+import           Cardano.Api.Shelley (PlutusScript (..), PlutusScriptV1)
+
+import           Codec.Serialise
+import qualified Data.ByteString.Lazy as LBS
+import qualified Data.ByteString.Short as SBS
 import           Data.Aeson           (ToJSON, FromJSON)
 import           Data.List.NonEmpty   (NonEmpty (..))
 import           Data.Map             as Map
@@ -49,8 +59,8 @@ import           Playground.TH        (mkKnownCurrencies, mkSchemaDefinitions)
 import           Playground.Types     (KnownCurrency (..))
 import           Plutus.Contract
 import qualified PlutusTx
-import           PlutusTx.Prelude     hiding (unless)
-import qualified Prelude              as P
+import qualified PlutusTx.Prelude     as PlutusTx.Prelude hiding (unless)
+--import qualified Prelude              as P
 import           Schema               (ToSchema)
 import           Text.Printf          (printf)
 
@@ -63,15 +73,15 @@ data Auction = Auction
     , aMinBid   :: !Integer
     , aCurrency :: !CurrencySymbol
     , aToken    :: !TokenName
-    } deriving (P.Show, Generic, ToJSON, FromJSON, ToSchema)
+    } deriving (Show, Generic, ToJSON, FromJSON, ToSchema)
 
-instance Eq Auction where
+instance PlutusTx.Prelude.Eq Auction where
     {-# INLINABLE (==) #-}
-    a == b = (aNFTowner   a == aNFTowner   b) &&
-             (aDeadline a == aDeadline b) &&
-             (aMinBid   a == aMinBid   b) &&
-             (aCurrency a == aCurrency b) &&
-             (aToken    a == aToken    b)
+    a == b = (aNFTowner   a PlutusTx.Prelude.== aNFTowner   b) PlutusTx.Prelude.&&
+             (aDeadline a PlutusTx.Prelude.== aDeadline b) PlutusTx.Prelude.&&
+             (aMinBid   a PlutusTx.Prelude.== aMinBid   b) PlutusTx.Prelude.&&
+             (aCurrency a PlutusTx.Prelude.== aCurrency b) PlutusTx.Prelude.&&
+             (aToken    a PlutusTx.Prelude.== aToken    b)
 
 PlutusTx.unstableMakeIsData ''Auction
 PlutusTx.makeLift ''Auction
@@ -79,18 +89,18 @@ PlutusTx.makeLift ''Auction
 data Bid = Bid
     { bBidder :: !PaymentPubKeyHash
     , bBid    :: !Integer
-    } deriving P.Show
+    } deriving Show
 
-instance Eq Bid where
+instance PlutusTx.Prelude.Eq Bid where
     {-# INLINABLE (==) #-}
-    b == c = (bBidder b == bBidder c) &&
-             (bBid    b == bBid    c)
+    b == c = (bBidder b PlutusTx.Prelude.== bBidder c) PlutusTx.Prelude.&&
+             (bBid    b PlutusTx.Prelude.== bBid    c)
 
 PlutusTx.unstableMakeIsData ''Bid
 PlutusTx.makeLift ''Bid
 
 data AuctionAction = MkBid Bid | Close
-    deriving P.Show
+    deriving Show
 
 PlutusTx.unstableMakeIsData ''AuctionAction
 PlutusTx.makeLift ''AuctionAction
@@ -98,7 +108,7 @@ PlutusTx.makeLift ''AuctionAction
 data AuctionDatum = AuctionDatum
     { adAuction    :: !Auction
     , adHighestBid :: !(Maybe Bid)
-    } deriving P.Show
+    } deriving Show
 
 PlutusTx.unstableMakeIsData ''AuctionDatum
 PlutusTx.makeLift ''AuctionDatum
@@ -232,6 +242,16 @@ auctionHash = Scripts.validatorHash typedAuctionValidator
 
 auctionAddress :: Ledger.Address
 auctionAddress = scriptHashAddress auctionHash
+
+script :: Ledger.Script
+script = Ledger.unValidatorScript validator
+
+auctionScriptShortBs :: SBS.ShortByteString
+auctionScriptShortBs = SBS.toShort . LBS.toStrict $ serialise script
+
+auctionScript :: PlutusScript PlutusScriptV1
+auctionScript = PlutusScriptSerialised auctionScriptShortBs
+
 
 data StartParams = StartParams
     { spDeadline :: !POSIXTime
