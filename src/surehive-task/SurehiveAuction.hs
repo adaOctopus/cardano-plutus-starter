@@ -67,6 +67,9 @@ import           Text.Printf          (printf)
 minLovelace :: Integer
 minLovelace = 2000000
 
+
+-- THis is used as the initial datum Bob uses to lock the NFT to the smart contract
+--
 data Auction = Auction
     { aNFTowner   :: !PaymentPubKeyHash
     , aDeadline :: !POSIXTime
@@ -105,6 +108,8 @@ data AuctionAction = MkBid Bid | Close
 PlutusTx.unstableMakeIsData ''AuctionAction
 PlutusTx.makeLift ''AuctionAction
 
+
+-- This is what we also use as a redeemer whenever someone bids
 data AuctionDatum = AuctionDatum
     { adAuction    :: !Auction
     , adHighestBid :: !(Maybe Bid)
@@ -243,6 +248,8 @@ auctionHash = Scripts.validatorHash typedAuctionValidator
 auctionAddress :: Ledger.Address
 auctionAddress = scriptHashAddress auctionHash
 
+-- Adding the 3 following functions to use them in my helper HAskell file
+-- We use them in order to write the PLutusscript file into the disc (serialize it)
 script :: Ledger.Script
 script = Ledger.unValidatorScript validator
 
@@ -251,6 +258,8 @@ auctionScriptShortBs = SBS.toShort . LBS.toStrict $ serialise script
 
 auctionScript :: PlutusScript PlutusScriptV1
 auctionScript = PlutusScriptSerialised auctionScriptShortBs
+------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 
 
 data StartParams = StartParams
